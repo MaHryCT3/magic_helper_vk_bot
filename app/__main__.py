@@ -1,7 +1,6 @@
 from aiohttp import web
 import asyncio
 import os
-import argparse
 
 from loguru import logger
 

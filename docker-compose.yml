@@ -24,7 +24,7 @@ services:
   weebhook:
     build:
       context: .
-      dockerfile: /docker/weebhook/Dockerfile
+      dockerfile: ./docker/webhook/Dockerfile
     container_name: weebhook
     env_file: ./.env
     depends_on:
