@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "magic_helper_bot"
+version = "0.1.0"
+description = ""
+authors = ["MaHryCT3 <mahryct123@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiohttp = "^3.8.1"
+vkbottle = "^4.3.8"
+python-dotenv = "^0.20.0"
+redis = "^4.3.4"
+peewee = "^3.15.1"
+psycopg2 = "^2.9.3"
+loguru = "^0.6.0"
+
+[tool.poetry.dev-dependencies]
+black = {version = "^22.6.0", allow-prereleases = true}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

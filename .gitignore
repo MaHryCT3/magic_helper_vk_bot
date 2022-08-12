@@ -1,0 +1,9 @@
+/.vscode
+./pycache
+*.pyc
+.env
+test.py
+test_db.py
+*.jpg
+*.log
+/.git

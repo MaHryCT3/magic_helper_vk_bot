@@ -1,0 +1,53 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:14.4-alpine
+    container_name: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file: ./.env
+    networks:
+      - magic_helper_network
+
+  redis:
+    image: redis:7.0.4-alpine
+    container_name: redis
+    command: [ sh, -c, "rm -f /data/dump.rdb && redis-server" ]
+    env_file: ./.env
+    depends_on:
+      - postgres
+    ports:
+      - 6379:6379
+    networks:
+      - magic_helper_network
+
+  weebhook:
+    build:
+      context: .
+      dockerfile: /docker/weebhook/Dockerfile
+    container_name: weebhook
+    env_file: ./.env
+    depends_on:
+      - redis
+    networks:
+      - magic_helper_network
+
+  nginx_webhook:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    container_name: nginx_webhook
+    depends_on:
+      - weebhook
+    ports:
+      - 80:80
+    networks:
+      - magic_helper_network
+
+networks:
+  magic_helper_network:
+    driver: bridge
+    name: magic_helper_network
+
+volumes:
+  postgres-data:
