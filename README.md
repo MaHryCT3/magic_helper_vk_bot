@@ -4,7 +4,6 @@ This VK bot for helps moderators on [Magic Rust](https://vk.com/magicowrust)
 
 
 ## Abilitys
-----------------------------------------------------------------
 * Count checks 
 > That's not all. Application is developing
 # Requirements
@@ -20,7 +19,6 @@ This VK bot for helps moderators on [Magic Rust](https://vk.com/magicowrust)
 * [Python ^3.10](https://www.python.org/downloads/)
 * Good mood
 ## Prepare 
-------------------------------------------------
 Clone the repository
 
 ```bash
