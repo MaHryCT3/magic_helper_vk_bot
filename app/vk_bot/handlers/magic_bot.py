@@ -1,11 +1,15 @@
 import re
 from loguru import logger
-import datetime
 
+import pendulum
+
+from app.helpers import constants
 from app.context import AppContext
 from app.vk_bot.handlers.abc import BaseHandler
 from app.exceptions import NotFoundPattern
 from app import models
+
+# TODO: Вынести всю логику отсюда
 
 
 class MagicBotHandler(BaseHandler):
@@ -31,7 +35,7 @@ class MagicBotHandler(BaseHandler):
         if not match:
             logger.error(f"Не было найдено вк айди в строке{text}")
             raise NotFoundPattern
-        return match[0]
+        return int(match[0])
 
     def _get_server_number(self, text: str) -> int:
         re_pattern = r"/cc2\s(\d+)\s"
@@ -55,7 +59,7 @@ class MagicBotHandler(BaseHandler):
     ):
         if check_stage == "Ended":
             row_id = ctx.redis.get_db_row_id(player_name)
-            ctx.postgres.edit_check_end(row_id, datetime.datetime.now())
+            ctx.postgres.edit_check_end(row_id, pendulum.now(tz=constants.TZ))
             if is_ban:
                 ctx.postgres.edit_is_ban(row_id, is_ban=is_ban)
 
@@ -81,7 +85,7 @@ class StartCheck(MagicBotHandler):
             steamid=steamid,
             player_name=player_name,
             moder_vk=moder_vk,
-            start_time=datetime.datetime.now(),
+            start_time=pendulum.now(tz=constants.TZ),
             server_number=server_number,
         )
 

@@ -1,15 +1,40 @@
 import abc
-from typing import NamedTuple, Literal
+from typing import NamedTuple
 from loguru import logger
 
 from app import models
 from app.context import AppContext
 from app.vk_bot.handlers.abc import BaseHandler
+from app.utils import checks
+from app.exceptions import ParamsError
+import random
 
 
 class CheckParams(NamedTuple):
     server_number: int
     steamid: int
+
+
+class Cmd(BaseHandler):
+    pass
+
+
+class GetChecksCmd(Cmd):
+    async def handle(self, data: models.VKEventData, ctx: AppContext):
+        try:
+            checks_count = checks.get_checks_count(data, ctx)
+        except ParamsError:
+            msg = "Какая-то ошибка с параметрами, когда то здесь появится объяснения. А пока просто попробуй еще раз"
+        else:
+            msg = checks_count
+        await ctx.vk_api.messages.send(
+            peer_id=data.user_id,
+            message=msg,
+            random_id=random.randint(-2147483648, 2147483647),
+        )
+
+
+# TODO: Вынести всю логику отсюда мудак
 
 
 class CheckCmd(BaseHandler):

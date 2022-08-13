@@ -7,7 +7,7 @@ RUN mkdir -p /home/MagicHelper
 
 RUN addgroup -S MagicHelper && adduser -S MagicHelper -G MagicHelper
 
-ENV PROJECT_HOME=/home/MagicHelper/vk_weebhook
+ENV PROJECT_HOME=/home/MagicHelper/vk_webhook
 RUN mkdir -p ${PROJECT_HOME}
 WORKDIR ${PROJECT_HOME}
 
@@ -16,7 +16,7 @@ COPY ./app/ ./app/
 COPY ./poetry.lock .
 COPY ./pyproject.toml .
 
-RUN chmod +x ${PROJECT_HOME}/docker/weebhook/entrypoint.sh
+RUN chmod +x ${PROJECT_HOME}/docker/webhook/entrypoint.sh
 
 RUN apk update
 RUN apk add postgresql-dev gcc libpq libpq-dev python3-dev musl-dev libffi-dev musl-dev openssl-dev cargo
@@ -30,4 +30,4 @@ RUN chown -R MagicHelper:MagicHelper ${PROJECT_HOME}
 
 USER MagicHelper
 
-ENTRYPOINT ["/bin/sh", "/home/MagicHelper/vk_weebhook/docker/weebhook/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/home/MagicHelper/vk_webhook/docker/weebhook/entrypoint.sh"]

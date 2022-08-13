@@ -1,9 +1,9 @@
-import datetime
 import os
-from typing import Literal
+import datetime as dt
 
 import peewee
 import redis
+from pendulum.datetime import DateTime
 
 from app.storage.orm_models import CheckModel
 from app.models import CheckInfo, TimeInterval, CheckStage
@@ -25,7 +25,7 @@ class PostgresController:
     def create_table(self):
         CheckModel.create_table()
 
-    def edit_check_end(self, _id: CheckModel.id, end_time: datetime.datetime):
+    def edit_check_end(self, _id: CheckModel.id, end_time: DateTime | dt.datetime):
         CheckModel.update(end_time=end_time).where(CheckModel.id == _id).execute()
 
     def edit_is_ban(self, _id: CheckModel.id, is_ban: bool):
@@ -60,6 +60,26 @@ class PostgresController:
             .execute()
         )
         return [CheckInfo.from_db(row) for row in rows]
+
+    def get_count_checks_by_time_interval(
+        self, time_interval: TimeInterval, moder_vk: int = None
+    ):
+        if moder_vk is None:
+            query_moder_vk = CheckModel.moder_vk.is_null(False)
+        else:
+            query_moder_vk = CheckModel.moder_vk == moder_vk
+
+        count = (
+            CheckModel.select(peewee.fn)
+            .where(
+                (CheckModel.start_time >= time_interval.start)
+                & (CheckModel.end_time <= time_interval.end)
+                & (CheckModel.end_time.is_null(False))
+                & (query_moder_vk)
+            )
+            .count()
+        )
+        return count
 
 
 class RedisController:

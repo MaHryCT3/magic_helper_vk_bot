@@ -12,3 +12,7 @@ class NotSupportedEvent(Exception):
 
 class FailedToDatabaseConnection(Exception):
     """Raised for error with database connection"""
+
+
+class ParamsError(Exception):
+    """Raised for error with parameters from user"""

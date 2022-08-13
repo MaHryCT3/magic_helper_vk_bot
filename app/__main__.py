@@ -7,6 +7,10 @@ from loguru import logger
 from app.context import AppContext
 from app.vk_bot import routes
 
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+
 
 logger.add(
     "logs.log",

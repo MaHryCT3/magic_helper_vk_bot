@@ -13,6 +13,7 @@ redis = "^4.3.4"
 peewee = "^3.15.1"
 psycopg2 = "^2.9.3"
 loguru = "^0.6.0"
+pendulum = "^2.1.2"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^22.6.0", allow-prereleases = true}
