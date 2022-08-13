@@ -11,7 +11,6 @@ This VK bot for helps moderators on [Magic Rust](https://vk.com/magicowrust)
 * Debian/Ubuntu
 * [Docker](https://docs.docker.com/engine/install/)
 * [Docker compose](https://docs.docker.com/compose/install/)
-* Nginx
 ## Development
 * [Docker](https://docs.docker.com/engine/install/)
 * [Docker compose](https://docs.docker.com/compose/install/)
