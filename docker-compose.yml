@@ -21,11 +21,11 @@ services:
     networks:
       - magic_helper_network
 
-  weebhook:
+  webhook:
     build:
       context: .
       dockerfile: ./docker/webhook/Dockerfile
-    container_name: weebhook
+    container_name: webhook
     env_file: ./.env
     depends_on:
       - redis

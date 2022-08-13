@@ -30,4 +30,4 @@ RUN chown -R MagicHelper:MagicHelper ${PROJECT_HOME}
 
 USER MagicHelper
 
-ENTRYPOINT ["/bin/sh", "/home/MagicHelper/vk_webhook/docker/weebhook/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/home/MagicHelper/vk_webhook/docker/webhook/entrypoint.sh"]
