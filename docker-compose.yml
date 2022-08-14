@@ -38,7 +38,7 @@ services:
       dockerfile: ./docker/nginx/Dockerfile
     container_name: nginx_webhook
     depends_on:
-      - weebhook
+      - webhook
     ports:
       - 80:80
     networks:
