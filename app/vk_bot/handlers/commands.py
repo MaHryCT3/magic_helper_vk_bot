@@ -42,7 +42,7 @@ class GetChecksCmd(Cmd):
 # TODO: Вынести всю логику отсюда мудак
 class CheckCmd(BaseHandler):
     def _parse_params(self, message: str) -> CheckParams:
-        params = message.split(" ", maxsplit=2)
+        params = message.split(" ", maxsplit=3)
         return CheckParams(
             server_number=params[1],
             steamid=params[2],
