@@ -1,11 +1,13 @@
 import abc
 from typing import NamedTuple
+
 from loguru import logger
+from vkbottle import VKAPIError
 
 from app import models
 from app.context import AppContext
 from app.vk_bot.handlers.abc import BaseHandler
-from app.utils import checks
+from app.utils import checks, messages
 from app.exceptions import ParamsError
 import random
 
@@ -27,16 +29,17 @@ class GetChecksCmd(Cmd):
             msg = "Какая-то ошибка с параметрами, когда то здесь появится объяснения. А пока просто попробуй еще раз"
         else:
             msg = checks_count
-        await ctx.vk_api.messages.send(
-            peer_id=data.user_id,
-            message=msg,
-            random_id=random.randint(-2147483648, 2147483647),
-        )
+
+        try:
+            await messages.send(ctx.vk_api, msg, data.chat_id)
+        except VKAPIError as e:
+            logger.error(f"Error with send message {e.code}")
+
+
+### Ниже обработка команд которые адресованы боту меджик раста ###
 
 
 # TODO: Вынести всю логику отсюда мудак
-
-
 class CheckCmd(BaseHandler):
     def _parse_params(self, message: str) -> CheckParams:
         params = message.split(" ", maxsplit=2)

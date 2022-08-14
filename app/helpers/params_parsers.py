@@ -16,36 +16,35 @@ def _get_check_params(data: models.VKEventData) -> ChecksParams:
     params.pop(0)  # remove cmd
 
     moder_vk = data.user_id
-    time_interval = time_help.get_current_work_month_time_interval()
+    time_interval = time_help.get_today_time_interval()
 
-    if len(params) == 2:
-        time_interval = time_help.parse_time_interval_from_string(params[1])
-        moder_vk = regex_parser.get_vk_id(params[0])
+    if not params:
+        pass
 
-    elif len(params) == 1:
+    elif time_help.is_word_mean_unique_time(params[0]):
+        time_interval = time_help.get_time_interval_from_word(params[0])
+        moder_vk = None
 
-        if time_help.is_word_mean_unique_time(params[0]):
-            time_interval = time_help.get_time_interval_from_word(params[0])
-            moder_vk = None
+    else:
+        vk_id = regex_parser.get_vk_id(params[0])
+        if vk_id is not None:
+            moder_vk = vk_id
 
-        if time_help.is_word_mean_time(params[0]):
-            time_interval = time_help.get_time_interval_from_word(params[0])
-
-    return ChecksParams(
-        moder_vk=moder_vk,
-        time_interval=time_interval,
-    )
+    return ChecksParams(moder_vk=moder_vk, time_interval=time_interval)
 
 
 def parse_check_params(data: models.VKEventData) -> ChecksParams | None:
-    """
-    /checks "@user=автор" "time=gg"
-    /checks -> Твои проверки за рабочий месяц
-    /checks today-> Твои проверки за сегодня
-    /checks @mahryct today -> Проверки @ за день
-    /checks @mahryct 10.10.2022-12.10.2022 -> Провери за указанный срок,
-    /checks gg -> Все проверки за рабочий месяц
-    /checks all -> Проверки за все время работы бота
+    """Parse parameters from vk event data. Return ChecksParams model
+
+    Examples:
+        /checks -> return ur today checks count.
+        /checks gg -> return all checks from this work month.
+        /checks @user -> return today checks count @user.
+
+    Args:
+        data - data from vk
+    Return:
+        params_models.ChecksParams or None if check can't get check parameters from this data.
     """
     try:
         return _get_check_params(data)
