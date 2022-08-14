@@ -15,7 +15,7 @@ This VK bot for helps moderators on [Magic Rust](https://vk.com/magicowrust)
 * [Docker](https://docs.docker.com/engine/install/)
 * [Docker compose](https://docs.docker.com/compose/install/)
 * [Poetry](https://python-poetry.org/)
-* [Python ^3.10](https://www.python.org/downloads/)
+* [Python](https://www.python.org/downloads/) ^3.10
 * Good mood
 ## Prepare 
 Clone the repository
