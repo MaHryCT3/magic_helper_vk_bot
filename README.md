@@ -21,7 +21,7 @@ This VK bot for helps moderators on [Magic Rust](https://vk.com/magicowrust)
 Clone the repository
 
 ```bash
-$ git clone https://github.com/MaHryCT3/magic_helper_vk_bot.git
+git clone https://github.com/MaHryCT3/magic_helper_vk_bot.git
 ```
 Configure **.env.example** and save as **.env**. Detailed information about .env configurations provided in [ENVFILES.md](https://github.com/MaHryCT3/magic_helper_vk_bot/blob/master/ENVFILES.md)
 
@@ -30,5 +30,5 @@ Configure **.env.example** and save as **.env**. Detailed information about .env
 **Note**: If you don't have the `make`, copy the commands from Makefile
 
 ```bash
-$ make build
+make build
 ```
