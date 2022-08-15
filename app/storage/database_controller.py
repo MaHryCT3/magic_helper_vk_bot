@@ -10,7 +10,7 @@ from app.models import CheckInfo, TimeInterval, CheckStage
 
 
 class PostgresController:
-    def new_check(self, check_info: CheckInfo) -> CheckModel.id:
+    def new_check(self, check_info: CheckInfo) -> int:
         """Create a new check row in database and return the line id"""
         check = CheckModel.create(
             steamid=check_info.steamid,

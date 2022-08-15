@@ -8,3 +8,6 @@ class REGEX_PATTERNS:
     STRING_IS_DATE = (
         r"\d{,2}.\d{2}.\d{4}-\d{,2}.\d{2}.\d{4}"  # -> `9.04.2022-8.05.2022`
     )
+    STEAMID = r"/cc2 \d{,2} (\d+) для"
+    PLAYER_NAME = r"Ответ:\s(.+)\s[бвз][оыа][лзб]"
+    SERVER_NUMBER = r"/cc2\s(\d+)\s"

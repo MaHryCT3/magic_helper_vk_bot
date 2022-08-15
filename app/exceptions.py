@@ -16,3 +16,7 @@ class FailedToDatabaseConnection(Exception):
 
 class ParamsError(Exception):
     """Raised for error with parameters from user"""
+
+
+class CantGetChecksInfo(Exception):
+    """Raised for error when cant get checks info from database"""

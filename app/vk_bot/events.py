@@ -146,3 +146,6 @@ def get_handler(data: models.VKEventData) -> BaseHandler | None:
         if handler is not None:
             return handler
     return None
+
+
+# TODO: Ты знаешь что тебе нужно сделать
