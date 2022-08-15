@@ -59,8 +59,8 @@ def get_player_name(message: str) -> Optional[str]:
     Return:
         player name from magic bot message or None if not matching.
     """
-
-    return _match(REGEX_PATTERNS.PLAYER_NAME, message, "player name")
+    player_name = _match(REGEX_PATTERNS.PLAYER_NAME, message, "player name")
+    return player_name.replace(" ", "")
 
 
 def get_server_number(message: str) -> Optional[int]:
