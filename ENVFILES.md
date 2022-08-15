@@ -39,4 +39,4 @@ POSTGRES_DB - Postgres database
 ```
 ## Redis container
 
-**Note**: Redis settings equal reddis accessing [settings](https://github.com/MaHryCT3/magic_helper_vk_bot/blob/main/ENVFILES.md#redis)
+**Note**: Redis settings equal reddis accessing [settings](#redis)
