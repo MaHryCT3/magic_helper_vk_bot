@@ -24,7 +24,7 @@ class GetChecksCmd(Cmd):
         except ParamsError:
             msg = "Какая-то ошибка с параметрами, когда то здесь появится объяснения. А пока просто попробуй еще раз"
         try:
-            checks.get_checks_count(params, ctx)
+            msg = checks.get_checks_count(params, ctx)
         except Exception as e:
             msg = "Произошла непредвиденная ошибка, скорее всего нету доступа к базе данных."
         try:
