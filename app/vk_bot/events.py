@@ -1,6 +1,8 @@
 import abc
 import typing as tp
 
+from loguru import logger
+
 from app import models
 from app.vk_bot.handlers.abc import BaseHandler
 from app.vk_bot.handlers.magic_bot import (
@@ -77,8 +79,11 @@ class MagicBotEvent(Events):
 class CommandEvent(Events):
     @staticmethod
     def _is_cmd_msg(message: str):
-        if message[0] == "/":
-            return True
+        try:
+            if message[0] == "/":
+                return True
+        except:
+            return False
         return False
 
     @staticmethod
@@ -134,7 +139,10 @@ events_typle: list[Events] = (MagicBotEvent, CommandEvent)
 
 def get_handler(data: models.VKEventData) -> BaseHandler | None:
     for event in events_typle:
-        handler = event.get_handler(data)
+        try:
+            handler = event.get_handler(data)
+        except:
+            logger.error(f"Произошла ошибка при попытке получить хендлер для {data}")
         if handler is not None:
             return handler
     return None

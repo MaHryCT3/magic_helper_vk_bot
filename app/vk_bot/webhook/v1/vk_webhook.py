@@ -9,7 +9,10 @@ from app.vk_bot.events import get_handler
 
 async def handle(request: web.Request, ctx: AppContext) -> web.Response:
     data = models.VKEventData.from_json(await request.json())
-    handler = get_handler(data)
+    try:
+        handler = get_handler(data)
+    except:
+        pass
     if handler is not None:
         asyncio.get_running_loop().create_task(handler(data=data, ctx=ctx))
     return web.Response(text="ok", status=200)
