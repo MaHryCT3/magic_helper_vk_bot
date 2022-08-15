@@ -22,7 +22,7 @@ class MagicBotHandler(BaseHandler):
         return match[0]
 
     def _get_player_name(self, text: str) -> str:
-        re_pattern = r"Ответ:\s(.+)\s[бвз]"
+        re_pattern = r"Ответ:\s(.+)\s[бвз][оыа][лзб]"
         match = re.findall(re_pattern, text)
         if not match:
             logger.error(f"Не было найдено ника в строке{text}")
