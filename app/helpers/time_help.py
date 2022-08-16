@@ -48,11 +48,11 @@ def get_current_work_month_time_interval() -> models.TimeInterval:
     """Return work-month time intraval
     Example
     --------
-    const DAY_WORK_MONTH_END = 9
-    Date 30.08.2022 -> Return 09.08.2022 - 30.08.2022
-    Date 1.10.2022 -> Return 09.09.2022 -  1.10.2022
-    Date 15.02.2022 -> Return 09.02.2022 - 15.02.2022
-    Date 8.05.2022 -> Return 09.04.2022 - 08.05.2022
+        const DAY_WORK_MONTH_END = 9
+        Date 30.08.2022 -> Return 09.08.2022 - 30.08.2022
+        Date 1.10.2022 -> Return 09.09.2022 -  1.10.2022
+        Date 15.02.2022 -> Return 09.02.2022 - 15.02.2022
+        Date 8.05.2022 -> Return 09.04.2022 - 08.05.2022
     """
     time_now = pendulum.now(tz=constants.TZ)
     start = _get_time_start(time_now)

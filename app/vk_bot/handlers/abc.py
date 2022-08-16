@@ -1,7 +1,5 @@
 import abc
 
-from vkbottle import API
-
 from app import models
 from app.context import AppContext
 

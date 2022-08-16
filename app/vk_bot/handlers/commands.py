@@ -5,12 +5,12 @@ from loguru import logger
 from vkbottle import VKAPIError
 
 from app import models
+from app import views
 from app.helpers import params_parsers as p_parsers
 from app.context import AppContext
 from app.vk_bot.handlers.abc import BaseHandler
-from app.utils import checks, messages
+from app.utils import checks, vk
 from app.exceptions import ParamsError
-import random
 
 
 class Cmd(BaseHandler):
@@ -23,17 +23,22 @@ class GetChecksCmd(Cmd):
             params = p_parsers.parse_get_check_count_params(data)
         except ParamsError:
             msg = "Какая-то ошибка с параметрами, когда то здесь появится объяснения. А пока просто попробуй еще раз"
+
         try:
-            msg = checks.get_checks_count(params, ctx)
+            checks_count = await checks.get_checks_count(params, ctx)
         except Exception as e:
             msg = "Произошла непредвиденная ошибка, скорее всего нету доступа к базе данных."
+            logger.error(e)
+        else:
+            msg = views.get_check_view(checks_count=checks_count, params=params)
+
         try:
-            await messages.send(ctx.vk_api, msg, data.chat_id)
+            await vk.send_message(ctx.vk_api, msg, data.chat_id)
         except VKAPIError as e:
-            logger.error(f"Error with send message {e.code}")
+            logger.critical(f"Error with send message {e.code}")
 
 
-### Ниже обработка команд которые адресованы боту меджик раста ###
+### Ниже обработка команд которые адресованых боту меджик раста ###
 
 
 class CheckCmds(BaseHandler):

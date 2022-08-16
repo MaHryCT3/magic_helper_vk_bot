@@ -62,24 +62,42 @@ class PostgresController:
         return [CheckInfo.from_db(row) for row in rows]
 
     def get_count_checks_by_time_interval(
-        self, time_interval: TimeInterval, moder_vk: int = None
-    ):
+        self, time_interval: TimeInterval, moder_vk: int = None, is_ban: bool = False
+    ) -> int:
+        """Returns a checks count by time interval
+
+        Args:
+            time_interval: time interval
+            moder_vk: moderator vk id
+            is_ban: if is True returns only checks that ended in a ban
+
+        Returns:
+            Number of checks by arguments
+        """
         if moder_vk is None:
             query_moder_vk = CheckModel.moder_vk.is_null(False)
         else:
             query_moder_vk = CheckModel.moder_vk == moder_vk
 
         count = (
-            CheckModel.select(peewee.fn)
+            CheckModel.select()
             .where(
                 (CheckModel.start_time >= time_interval.start)
                 & (CheckModel.end_time <= time_interval.end)
                 & (CheckModel.end_time.is_null(False))
                 & (query_moder_vk)
+                & (CheckModel.is_ban == is_ban)
             )
             .count()
         )
         return count
+
+    def get_moderators(self) -> list[int]:
+        """Returns all moderators in database"""
+        moders = (
+            CheckModel.select(CheckModel.moder_vk).distinct().namedtuples().execute()
+        )
+        return [int(i.moder_vk) for i in moders]
 
 
 class RedisController:

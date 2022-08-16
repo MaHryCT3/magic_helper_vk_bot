@@ -1,6 +1,8 @@
 import os
 
 import peewee
+from playhouse.postgres_ext import PostgresqlExtDatabase
+from playhouse.postgres_ext import DateTimeTZField
 
 from app.exceptions import FailedToDatabaseConnection
 
@@ -9,7 +11,7 @@ class BaseModel(peewee.Model):
     """A base database model."""
 
     class Meta:
-        database = peewee.PostgresqlDatabase(
+        database = PostgresqlExtDatabase(
             host=os.getenv("DATABASE_HOST", "localhost"),
             port=os.getenv("DATABASE_PORT", "5432"),
             user=os.getenv("DATABASE_USER", "postgres"),
@@ -31,8 +33,8 @@ class CheckModel(BaseModel):
     id = peewee.AutoField()
     steamid = peewee.BigIntegerField(null=False)
     moder_vk = peewee.BigIntegerField(null=False)
-    start_time = peewee.DateTimeField(null=False)
-    end_time = peewee.DateTimeField(null=True)
+    start_time = DateTimeTZField(null=False)
+    end_time = DateTimeTZField(null=True)
     server_number = peewee.IntegerField(null=True)
     is_ban = peewee.BooleanField(null=False, default=False)
 

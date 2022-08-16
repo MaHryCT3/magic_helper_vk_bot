@@ -18,24 +18,34 @@ __all__ = [
 ]
 
 
+# def _get_check_count_params(data: models.VKEventData) -> p_models.GetChecksParameters:
+#     params = data.text.split(" ")
+#     params.pop(0)  # remove cmd
+
+#     moder_vk = data.user_id
+#     time_interval = time_help.get_today_time_interval()
+
+#     if not params:
+#         pass
+
+#     elif time_help.is_word_mean_unique_time(params[0]):
+#         time_interval = time_help.get_time_interval_from_word(params[0])
+#         moder_vk = None
+
+#     else:
+#         vk_id = regex_parser.get_vk_id(params[0])
+#         if vk_id is not None:
+#             moder_vk = vk_id
+
+#     return p_models.GetChecksParameters(moder_vk=moder_vk, time_interval=time_interval)
+
+
 def _get_check_count_params(data: models.VKEventData) -> p_models.GetChecksParameters:
     params = data.text.split(" ")
     params.pop(0)  # remove cmd
 
-    moder_vk = data.user_id
-    time_interval = time_help.get_today_time_interval()
-
-    if not params:
-        pass
-
-    elif time_help.is_word_mean_unique_time(params[0]):
-        time_interval = time_help.get_time_interval_from_word(params[0])
-        moder_vk = None
-
-    else:
-        vk_id = regex_parser.get_vk_id(params[0])
-        if vk_id is not None:
-            moder_vk = vk_id
+    moder_vk = None
+    time_interval = time_help.get_current_work_month_time_interval()
 
     return p_models.GetChecksParameters(moder_vk=moder_vk, time_interval=time_interval)
 
@@ -43,7 +53,7 @@ def _get_check_count_params(data: models.VKEventData) -> p_models.GetChecksParam
 def parse_get_check_count_params(
     data: models.VKEventData,
 ) -> Optional[p_models.GetChecksParameters]:
-    """Parse parameters from vk event data. Return ChecksParams model
+    """Parse parameters from vk event data. Return GetChecksParams model
 
     Examples:
         /checks -> return ur today checks count.
@@ -58,8 +68,8 @@ def parse_get_check_count_params(
     try:
         return _get_check_count_params(data)
     except Exception as e:
-        raise ParamsError
         logger.error(e)
+        raise ParamsError
 
 
 def parse_check_params(data: models.VKEventData) -> p_models.ChecksCmdParams:

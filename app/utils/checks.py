@@ -5,6 +5,7 @@ from loguru import logger
 
 from app.context import AppContext
 from app.exceptions import CantGetChecksInfo
+from app.utils import vk
 from app.helpers import params_models as p_models
 from app.helpers.params_parsers import parse_get_check_count_params
 from app.helpers import constants
@@ -18,21 +19,34 @@ __all__ = [
 ]
 
 
-def get_checks_count(params: p_models.GetChecksParameters, ctx: AppContext) -> int:
+async def get_checks_count(
+    params: p_models.GetChecksParameters, ctx: AppContext
+) -> list[models.ChecksCount]:
     """Return check count from database
 
     Raise ParamsError if params is invalid
     """
-    try:
-        check_count = ctx.postgres.get_count_checks_by_time_interval(
-            time_interval=params.time_interval,
-            moder_vk=params.moder_vk,
+    if params.moder_vk is None:
+        moderators = ctx.postgres.get_moderators()
+    else:
+        moderators = params.moder_vk
+
+    checks_count = list()
+    for moder_id in moderators:
+        moder_info = await vk.get_user(ctx.vk_api, moder_id)
+        checks = models.ChecksCount(
+            moder=moder_info,
+            checks_count=ctx.postgres.get_count_checks_by_time_interval(
+                params.time_interval, moder_id
+            ),
+            checks_ban=ctx.postgres.get_count_checks_by_time_interval(
+                params.time_interval, moder_id, is_ban=True
+            ),
         )
-    except Exception as e:
-        logger.critical(f"Cant get check info from database {e}")
-        raise CantGetChecksInfo
-    logger.info(f"Returns checks count by params {params}: {check_count}")
-    return check_count
+        checks_count.append(checks)
+
+    logger.info(f"Returns checks count by params {params}: {checks_count}")
+    return checks_count
 
 
 def record_check_info_to_db(ctx: AppContext, check_info: models.CheckInfo):

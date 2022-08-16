@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import dataclasses
-import datetime
 import typing as tp
+
+
+from pendulum.datetime import DateTime
 
 from app.exceptions import VKJsonError, NotSupportedEvent
 
@@ -12,9 +14,30 @@ CheckStage = tp.Literal["Process", "Ended", "Cancelled"]
 
 
 @dataclasses.dataclass
+class ChecksCount:
+    moder: Moderator
+    checks_count: int = None
+    checks_ban: int = None
+
+
+@dataclasses.dataclass
+class VKUser:
+    id_: int
+    name: tp.Optional[str] = None
+    surname: tp.Optional[str] = None
+
+    def __repr__(self) -> str:
+        return f"{self.name} {self.surname}"
+
+
+class Moderator(VKUser):
+    steamid: tp.Optional[int] = None
+
+
+@dataclasses.dataclass
 class TimeInterval:
-    start: datetime.datetime
-    end: datetime.datetime
+    start: DateTime
+    end: DateTime
 
 
 @dataclasses.dataclass
@@ -22,8 +45,8 @@ class CheckInfo:
     steamid: int
     player_name: str = None
     moder_vk: int = None
-    start_time: datetime.datetime = None
-    end_time: datetime.datetime = None
+    start_time: DateTime = None
+    end_time: DateTime = None
     server_number: int = None
     is_ban: bool = False
 
@@ -43,7 +66,7 @@ class CheckInfo:
 class VKEventData:
     event_type: str
     user_id: int
-    date: datetime.datetime
+    date: DateTime
     chat_id: tp.Optional[int] = None
     text: tp.Optional[str] = None
 
@@ -60,7 +83,7 @@ class VKEventData:
             raise NotSupportedEvent
         return cls(
             event_type=event_type,
-            date=datetime.datetime.fromtimestamp(event_info.get("date")),
+            date=DateTime.fromtimestamp(event_info.get("date")),
             user_id=event_info.get("from_id"),
             chat_id=event_info.get("peer_id"),
             text=event_info.get("text"),
