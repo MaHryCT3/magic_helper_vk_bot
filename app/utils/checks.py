@@ -40,7 +40,7 @@ async def get_checks_count(
                 params.time_interval, moder_id
             ),
             checks_ban=ctx.postgres.get_count_checks_by_time_interval(
-                params.time_interval, moder_id, is_ban=True
+                params.time_interval, moder_id, only_banned=True
             ),
         )
         checks_count.append(checks)
