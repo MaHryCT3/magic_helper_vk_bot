@@ -62,14 +62,17 @@ class PostgresController:
         return [CheckInfo.from_db(row) for row in rows]
 
     def get_count_checks_by_time_interval(
-        self, time_interval: TimeInterval, moder_vk: int = None, is_ban: bool = False
+        self,
+        time_interval: TimeInterval,
+        moder_vk: int = None,
+        only_banned: bool = False,
     ) -> int:
         """Returns a checks count by time interval
 
         Args:
             time_interval: time interval
             moder_vk: moderator vk id
-            is_ban: if is True returns only checks that ended in a ban
+            only_banned: if is True returns only checks that ended in a ban
 
         Returns:
             Number of checks by arguments
@@ -79,6 +82,11 @@ class PostgresController:
         else:
             query_moder_vk = CheckModel.moder_vk == moder_vk
 
+        if only_banned:
+            query_is_ban = CheckModel.is_ban == True
+        else:
+            query_is_ban = (CheckModel.is_ban == True) | (CheckModel.is_ban == False)
+
         count = (
             CheckModel.select()
             .where(
@@ -86,7 +94,7 @@ class PostgresController:
                 & (CheckModel.end_time <= time_interval.end)
                 & (CheckModel.end_time.is_null(False))
                 & (query_moder_vk)
-                & (CheckModel.is_ban == is_ban)
+                & (query_is_ban)
             )
             .count()
         )
