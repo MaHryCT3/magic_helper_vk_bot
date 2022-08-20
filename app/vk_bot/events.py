@@ -10,16 +10,13 @@ from app.vk_bot.handlers.magic_bot import (
     StopCheck,
     BanCheck,
     MagicBotHandler,
-)
-from app.vk_bot.handlers.commands import (
     StopCheckCmd,
     CancelCheckCmd,
     BanCheckCmd,
+)
+from app.vk_bot.handlers.commands import (
     GetChecksCmd,
 )
-
-
-vk_callback_dict: tp.TypeAlias = dict
 
 
 class Events(abc.ABC):
@@ -76,7 +73,7 @@ class MagicBotEvent(Events):
         return None
 
 
-class CommandEvent(Events):
+class MagicCommandEvent(Events):
     @staticmethod
     def _is_cmd_msg(message: str):
         try:
@@ -134,7 +131,7 @@ class CommandEvent(Events):
         return None
 
 
-events_typle: list[Events] = (MagicBotEvent, CommandEvent)
+events_typle: list[Events] = (MagicBotEvent, MagicCommandEvent)
 
 
 def get_handler(data: models.VKEventData) -> BaseHandler | None:

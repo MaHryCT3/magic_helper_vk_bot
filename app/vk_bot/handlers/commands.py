@@ -36,28 +36,3 @@ class GetChecksCmd(Cmd):
             await vk.send_message(ctx.vk_api, msg, data.chat_id)
         except VKAPIError as e:
             logger.critical(f"Error with send message {e.code}")
-
-
-### Ниже обработка команд которые адресованых боту меджик раста ###
-
-
-class CheckCmds(BaseHandler):
-    pass
-
-
-class StopCheckCmd(CheckCmds):
-    async def handle(self, data: models.VKEventData, ctx: AppContext):
-        params = p_parsers.parse_check_params(data)
-        checks.update_check_stage(ctx, params, "Ended")
-
-
-class CancelCheckCmd(CheckCmds):
-    async def handle(self, data: models.VKEventData, ctx: AppContext):
-        params = p_parsers.parse_check_params(data)
-        checks.update_check_stage(ctx, params, "Cancelled")
-
-
-class BanCheckCmd(CheckCmds):
-    async def handle(self, data: models.VKEventData, ctx: AppContext):
-        params = p_parsers.parse_ban_params(data)
-        checks.update_check_stage(ctx, params, "Ended")
