@@ -10,6 +10,18 @@ from app.helpers import regex_parser
 from app.utils import checks
 from app.vk_bot.handlers.abc import BaseHandler
 
+from app.vk_bot import events
+
+
+__all__ = (
+    "StopCheckCmd",
+    "CancelCheckCmd",
+    "BanCheckCmd",
+    "StartCheck",
+    "StopCheck",
+    "BanCheck",
+)
+
 
 class CheckCmds(BaseHandler):
     pass
@@ -18,18 +30,21 @@ class CheckCmds(BaseHandler):
 # Ниже обработка команд которые адресованых боту меджик раста
 
 
+@events.on_cmd(signs=["cc2"])
 class StopCheckCmd(CheckCmds):
     async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
         params = p_parsers.parse_check_params(data)
         checks.update_check_stage(ctx, params, "Ended")
 
 
+@events.on_cmd(signs=["cc3"])
 class CancelCheckCmd(CheckCmds):
     async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
         params = p_parsers.parse_check_params(data)
         checks.update_check_stage(ctx, params, "Cancelled")
 
 
+@events.on_cmd(signs=["ban"])
 class BanCheckCmd(CheckCmds):
     async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
         params = p_parsers.parse_ban_params(data)
@@ -42,7 +57,10 @@ class MagicBotHandler(BaseHandler):
 
 # Ниже обработка сообщений от бота мейджик раста
 
+start_check_signs: list[list[str]] = [["вызван на проверку", "для отмены проверки."]]
 
+
+@events.on_message(signs=start_check_signs)
 class StartCheck(MagicBotHandler):
     def _collect_check_data(self, message: str) -> models.CheckInfo:
         moder_vk = regex_parser.get_vk_id(message)
@@ -65,6 +83,10 @@ class StartCheck(MagicBotHandler):
         logger.info(f"Start check {check_data}")
 
 
+stop_check_signs: list[str] = ["больше не проверяется."]
+
+
+@events.on_message(signs=stop_check_signs)
 class StopCheck(MagicBotHandler):
     async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
         player_name = regex_parser.get_player_name(data.text)
@@ -72,6 +94,10 @@ class StopCheck(MagicBotHandler):
         checks.complete_check(ctx, player_name, check_stage=check_stage)
 
 
+ban_check_signs: list[str] = ["забанен с причиной"]
+
+
+@events.on_message(signs=ban_check_signs)
 class BanCheck(MagicBotHandler):
     async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
         player_name = regex_parser.get_player_name(data.text)

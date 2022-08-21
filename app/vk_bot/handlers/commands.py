@@ -10,11 +10,16 @@ from app.helpers import params_parsers as p_parsers
 from app.utils import checks, vk
 from app.vk_bot.handlers.abc import BaseHandler
 
+from app.vk_bot import events
+
+__all__ = ("GetChecksCmd",)
+
 
 class Cmd(BaseHandler):
     pass
 
 
+@events.on_cmd(signs=["checks"])
 class GetChecksCmd(Cmd):
     async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
         try:
