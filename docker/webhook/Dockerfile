@@ -19,11 +19,11 @@ COPY ./pyproject.toml .
 RUN chmod +x ${PROJECT_HOME}/docker/webhook/entrypoint.sh
 
 RUN apk update
-RUN apk add postgresql-dev gcc libpq libpq-dev python3-dev musl-dev libffi-dev musl-dev openssl-dev cargo
+RUN apk add postgresql-dev gcc libpq libpq-dev python3-dev musl-dev libffi-dev openssl-dev cargo
 RUN python -m pip install --upgrade pip
 RUN python -m pip install --no-cache-dir poetry
 RUN python -m poetry config virtualenvs.create false
-RUN python -m poetry install
+RUN python -m poetry install --no-dev
 RUN apk del cargo 
 
 RUN chown -R MagicHelper:MagicHelper ${PROJECT_HOME}
