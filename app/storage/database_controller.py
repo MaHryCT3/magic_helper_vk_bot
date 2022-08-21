@@ -1,9 +1,14 @@
 import os
 import datetime as dt
+from typing import Optional
 
 import peewee
+
 import redis
+
 from pendulum.datetime import DateTime
+
+from loguru import logger
 
 from app.storage.orm_models import CheckModel
 from app.models import CheckInfo, TimeInterval, CheckStage
@@ -22,13 +27,15 @@ class PostgresController:
         )
         return check.id
 
-    def create_table(self):
+    def create_table(self) -> None:
         CheckModel.create_table()
 
-    def edit_check_end(self, _id: CheckModel.id, end_time: DateTime | dt.datetime):
+    def edit_check_end(
+        self, _id: CheckModel.id, end_time: DateTime | dt.datetime
+    ) -> None:
         CheckModel.update(end_time=end_time).where(CheckModel.id == _id).execute()
 
-    def edit_is_ban(self, _id: CheckModel.id, is_ban: bool):
+    def edit_is_ban(self, _id: CheckModel.id, is_ban: bool) -> None:
         CheckModel.update(is_ban=is_ban).where(CheckModel.id == _id).execute()
 
     def get_check_info(self, steamid: int) -> CheckInfo:
@@ -125,44 +132,43 @@ class RedisController:
         steamid: int,
         db_row_id: int,
         check_stage: CheckStage = "Process",
-    ):
+    ) -> None:
         """Add new keys to set players"""
         self.rd.set("players", player_name)
         self.edit_steamid(player_name, steamid)
         self.edit_db_row_id(player_name, db_row_id)
         self.edit_check_stage(player_name, check_stage)
 
-    def edit_steamid(self, player_name: str, steamid: int):
+    def edit_steamid(self, player_name: str, steamid: int) -> None:
         self.rd.set(
             self.players_pattern.format(player_name=player_name, key="steamid"), steamid
         )
-        self.rd.set(steamid, player_name)
+        self.rd.set(str(steamid), player_name)
 
-    def edit_db_row_id(self, player_name: str, db_row_id: int):
+    def edit_db_row_id(self, player_name: str, db_row_id: int) -> None:
         self.rd.set(
             self.players_pattern.format(player_name=player_name, key="db_row_id"),
             db_row_id,
         )
 
-    def edit_check_stage(self, player_name: str, check_stage: CheckStage):
+    def edit_check_stage(self, player_name: str, check_stage: CheckStage) -> None:
         self.rd.set(
             self.players_pattern.format(player_name=player_name, key="check_stage"),
             check_stage,
         )
 
-    def get_steamid(self, player_name: str) -> int:
-        return int(
-            self.rd.get(
-                self.players_pattern.format(player_name=player_name, key="steamid")
-            )
+    def get_steamid(self, player_name: str) -> Optional[int]:
+        steamid = self.rd.get(
+            self.players_pattern.format(player_name=player_name, key="steamid")
+        )
+        return int(steamid) if steamid else None
+
+    def get_db_row_id(self, player_name: str) -> Optional[int]:
+        db_row_id = self.rd.get(
+            self.players_pattern.format(player_name=player_name, key="db_row_id")
         )
 
-    def get_db_row_id(self, player_name: str) -> int:
-        return int(
-            self.rd.get(
-                self.players_pattern.format(player_name=player_name, key="db_row_id")
-            )
-        )
+        return int(db_row_id) if db_row_id else None
 
     def get_check_stage(self, player_name: str) -> CheckStage:
         return str(
@@ -172,12 +178,14 @@ class RedisController:
         )
 
     def get_player_name(self, steamid: int) -> str:
-        return str(self.rd.get(steamid))
+        return str(self.rd.get(str(steamid)))
 
-    def clear_data(self, player_name: str):
+    def clear_data(self, player_name: str) -> None:
         steamid = self.get_steamid(player_name)
         keys = self.rd.keys(
             self.players_pattern.format(player_name=player_name, key="*")
         )
         self.rd.delete(*keys)
-        self.rd.delete(steamid)
+        if steamid is None:
+            logger.critical(f"Can't find steamid from player {player_name}")
+        self.rd.delete(str(steamid))

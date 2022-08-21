@@ -1,16 +1,14 @@
-import abc
-from typing import NamedTuple
-
 from loguru import logger
+
 from vkbottle import VKAPIError
 
 from app import models
 from app import views
-from app.helpers import params_parsers as p_parsers
 from app.context import AppContext
-from app.vk_bot.handlers.abc import BaseHandler
-from app.utils import checks, vk
 from app.exceptions import ParamsError
+from app.helpers import params_parsers as p_parsers
+from app.utils import checks, vk
+from app.vk_bot.handlers.abc import BaseHandler
 
 
 class Cmd(BaseHandler):
@@ -18,7 +16,7 @@ class Cmd(BaseHandler):
 
 
 class GetChecksCmd(Cmd):
-    async def handle(self, data: models.VKEventData, ctx: AppContext):
+    async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
         try:
             params = p_parsers.parse_get_check_count_params(data)
         except ParamsError:

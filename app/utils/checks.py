@@ -49,7 +49,7 @@ async def get_checks_count(
     return checks_count
 
 
-def record_check_info_to_db(ctx: AppContext, check_info: models.CheckInfo):
+def record_check_info_to_db(ctx: AppContext, check_info: models.CheckInfo) -> None:
     """Record new row to database with check info
 
     Args:
@@ -69,7 +69,7 @@ def update_check_stage(
     ctx: AppContext,
     params: p_models.ChecksCmdParams,
     check_stage: models.CheckStage,
-):
+) -> None:
     """Update check stage to player
 
     Args:
@@ -104,7 +104,7 @@ def complete_check(
     player_name: str,
     check_stage: models.CheckStage,
     is_ban: bool = False,
-):
+) -> None:
     """Performs database operations to complete the check.
 
     Update row with player name if checks is not cancelled.
@@ -124,7 +124,7 @@ def complete_check(
     _clear_redis_data(ctx, player_name)
 
 
-def _update_check_if_ended(ctx: AppContext, player_name: str, is_ban: bool):
+def _update_check_if_ended(ctx: AppContext, player_name: str, is_ban: bool) -> None:
     """Update database row with player name if check is end.
 
     Note: If check is cancelled (etc /cc3) check is not ended.
@@ -134,6 +134,6 @@ def _update_check_if_ended(ctx: AppContext, player_name: str, is_ban: bool):
     ctx.postgres.edit_is_ban(row_id, is_ban)
 
 
-def _clear_redis_data(ctx: AppContext, player_name: str):
+def _clear_redis_data(ctx: AppContext, player_name: str) -> None:
     """Clear redis data after checks is comleted"""
     ctx.redis.clear_data(player_name)

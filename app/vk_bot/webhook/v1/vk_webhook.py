@@ -1,6 +1,6 @@
-from aiohttp import web
 import asyncio
-import os
+
+from aiohttp import web
 
 from loguru import logger
 
@@ -12,7 +12,7 @@ from app.vk_bot.events import get_handler
 async def handle(request: web.Request, ctx: AppContext) -> web.Response:
     try:
         data = models.VKEventData.from_json(await request.json())
-    except:
+    except Exception:
         logger.error(f"Error when trying to get event data {request.text}")
     handler = get_handler(data)
     if handler is not None:

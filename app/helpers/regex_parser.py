@@ -36,7 +36,8 @@ def get_vk_id(message: str) -> Optional[int]:
     Return:
         First vk id in the message or None if not matching.
     """
-    return int(_match(REGEX_PATTERNS.VK_ID, message, "VK ID"))
+    vk_id = _match(REGEX_PATTERNS.VK_ID, message, "VK ID")
+    return int(vk_id) if vk_id else None
 
 
 def get_steamid(message: str) -> Optional[int]:
@@ -47,7 +48,8 @@ def get_steamid(message: str) -> Optional[int]:
     Return:
         steamid from magic bot message or None if not matching.
     """
-    return int(_match(REGEX_PATTERNS.STEAMID, message, "steamid"))
+    steamid = _match(REGEX_PATTERNS.STEAMID, message, "steamid")
+    return int(steamid) if steamid else None
 
 
 def get_player_name(message: str) -> Optional[str]:
@@ -60,7 +62,9 @@ def get_player_name(message: str) -> Optional[str]:
         player name from magic bot message or None if not matching.
     """
     player_name = _match(REGEX_PATTERNS.PLAYER_NAME, message, "player name")
-    return player_name.replace(" ", "")
+    if player_name is not None:
+        player_name = player_name.replace(" ", "")
+    return player_name
 
 
 def get_server_number(message: str) -> Optional[int]:
@@ -72,8 +76,8 @@ def get_server_number(message: str) -> Optional[int]:
     Return:
         server number from magic bot message or None if not matching.
     """
-
-    return int(_match(REGEX_PATTERNS.SERVER_NUMBER, message, "server number"))
+    server_number = _match(REGEX_PATTERNS.SERVER_NUMBER, message, "server number")
+    return int(server_number) if server_number else None
 
 
 def is_string_is_date(string: str) -> bool:

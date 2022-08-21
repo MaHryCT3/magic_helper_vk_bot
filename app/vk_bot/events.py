@@ -1,21 +1,21 @@
 import abc
-import typing as tp
+from typing import Iterable
 
 from loguru import logger
 
 from app import models
 from app.vk_bot.handlers.abc import BaseHandler
-from app.vk_bot.handlers.magic_bot import (
-    StartCheck,
-    StopCheck,
-    BanCheck,
-    MagicBotHandler,
-    StopCheckCmd,
-    CancelCheckCmd,
-    BanCheckCmd,
-)
 from app.vk_bot.handlers.commands import (
     GetChecksCmd,
+)
+from app.vk_bot.handlers.magic_bot import (
+    BanCheck,
+    BanCheckCmd,
+    CancelCheckCmd,
+    MagicBotHandler,
+    StartCheck,
+    StopCheck,
+    StopCheckCmd,
 )
 
 
@@ -29,7 +29,7 @@ class Events(abc.ABC):
 
 class MagicBotEvent(Events):
     @staticmethod
-    def _is_bot_msg(message):
+    def _is_bot_msg(message: str) -> bool:
         if "твоя команда выполнена." in message:
             return True
         return False
@@ -73,36 +73,38 @@ class MagicBotEvent(Events):
         return None
 
 
-class MagicCommandEvent(Events):
+class CommandsEvents(Events):
     @staticmethod
-    def _is_cmd_msg(message: str):
+    def _is_cmd_msg(message: str) -> bool:
         try:
             if message[0] == "/":
                 return True
-        except:
+        except Exception:
             return False
         return False
 
+
+class MagicCommandEvent(CommandsEvents):
     @staticmethod
-    def _is_end_check(cmd: str):
+    def _is_end_check(cmd: str) -> bool:
         if cmd == "cc2":
             return True
         return False
 
     @staticmethod
-    def _is_cancel_check(cmd: str):
+    def _is_cancel_check(cmd: str) -> bool:
         if cmd == "cc3":
             return True
         return False
 
     @staticmethod
-    def _is_ban_check(cmd: str):
+    def _is_ban_check(cmd: str) -> bool:
         if cmd == "ban":
             return True
         return False
 
     @staticmethod
-    def _is_checks_cmd(cmd: str):
+    def _is_checks_cmd(cmd: str) -> bool:
         if cmd.lower() == "checks":
             return True
         return False
@@ -131,14 +133,20 @@ class MagicCommandEvent(Events):
         return None
 
 
-events_typle: list[Events] = (MagicBotEvent, MagicCommandEvent)
+class CommandEvent(Events):
+    @classmethod
+    def get_handler(cls, data: models.VKEventData) -> None:
+        pass
+
+
+events_typle: Iterable[Events] = (MagicBotEvent, MagicCommandEvent)  # type: ignore
 
 
 def get_handler(data: models.VKEventData) -> BaseHandler | None:
     for event in events_typle:
         try:
             handler = event.get_handler(data)
-        except:
+        except Exception:
             logger.error(f"Произошла ошибка при попытке получить хендлер для {data}")
         if handler is not None:
             return handler
