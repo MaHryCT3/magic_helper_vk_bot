@@ -1,37 +1,37 @@
 from __future__ import annotations
 
 import dataclasses
-import typing as tp
+from typing import Optional, TypeAlias, Literal
 
+from app.exceptions import NotSupportedEvent, VKJsonError
 
 from pendulum.datetime import DateTime
 
-from app.exceptions import VKJsonError, NotSupportedEvent
 
-vk_callback_dict: tp.TypeAlias = dict
+vk_callback_dict: TypeAlias = dict
 
-CheckStage = tp.Literal["Process", "Ended", "Cancelled"]
+CheckStage = Literal["Process", "Ended", "Cancelled"]
 
 
 @dataclasses.dataclass
 class ChecksCount:
     moder: Moderator
-    checks_count: int = None
-    checks_ban: int = None
+    checks_count: Optional[int] = None
+    checks_ban: Optional[int] = None
 
 
 @dataclasses.dataclass
 class VKUser:
     id_: int
-    name: tp.Optional[str] = None
-    surname: tp.Optional[str] = None
+    name: Optional[str] = None
+    surname: Optional[str] = None
 
     def __repr__(self) -> str:
         return f"{self.name} {self.surname}"
 
 
 class Moderator(VKUser):
-    steamid: tp.Optional[int] = None
+    steamid: Optional[int] = None
 
 
 @dataclasses.dataclass
@@ -43,15 +43,15 @@ class TimeInterval:
 @dataclasses.dataclass
 class CheckInfo:
     steamid: int
-    player_name: str = None
-    moder_vk: int = None
-    start_time: DateTime = None
-    end_time: DateTime = None
-    server_number: int = None
+    player_name: Optional[str] = None
+    moder_vk: Optional[int] = None
+    start_time: Optional[DateTime] = None
+    end_time: Optional[DateTime] = None
+    server_number: Optional[int] = None
     is_ban: bool = False
 
     @classmethod
-    def from_db(cls, row):
+    def from_db(cls, row) -> CheckInfo:  # type: ignore
         return cls(
             steamid=row.steamid,
             moder_vk=row.moder_vk,
@@ -67,8 +67,8 @@ class VKEventData:
     event_type: str
     user_id: int
     date: DateTime
-    chat_id: tp.Optional[int] = None
-    text: tp.Optional[str] = None
+    chat_id: Optional[int] = None
+    text: Optional[str] = None
 
     @classmethod
     def from_json(cls, json: vk_callback_dict) -> VKEventData:

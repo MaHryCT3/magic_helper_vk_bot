@@ -1,6 +1,7 @@
-from aiohttp import web
 import asyncio
 import os
+
+from aiohttp import web
 
 from loguru import logger
 
@@ -19,7 +20,7 @@ logger.add(
 )
 
 
-async def create_app():
+async def create_app() -> web.Application:
     app = web.Application()
 
     ctx = AppContext()
@@ -32,14 +33,14 @@ async def create_app():
     return app
 
 
-def main():
+def main() -> None:
     app = asyncio.get_event_loop().run_until_complete(create_app())
 
     logger.info("Application starting...")
     web.run_app(
         app,
         port=int(os.getenv("PORT", 8080)),
-        access_log=logger,
+        access_log=logger,  # type: ignore
     )
 
 

@@ -15,20 +15,20 @@ class MonthYear(NamedTuple):
     year: int
 
 
-def _get_start_month_and_year(date: pendulum.DateTime) -> MonthYear:
+def _get_start_month_and_year(date: DateTime) -> MonthYear:
     if date.day <= constants.DAY_WORK_MONTH_END:
-        date = date.subtract(month=1)
+        date = date.subtract(months=1)
     return MonthYear(month=date.month, year=date.year)
 
 
-def _get_time_start(date: pendulum.DateTime) -> pendulum.DateTime:
+def _get_time_start(date: DateTime) -> DateTime:
     m_y = _get_start_month_and_year(date)
     return pendulum.datetime(
         year=m_y.year, month=m_y.month, day=constants.DAY_WORK_MONTH_END
     )
 
 
-def _time_interval_model(start, end) -> models.TimeInterval:
+def _time_interval_model(start: DateTime, end: DateTime) -> models.TimeInterval:
     return models.TimeInterval(
         start=start,
         end=end,
@@ -108,7 +108,7 @@ def get_time_interval_from_word(word: str) -> models.TimeInterval | None:
     return None
 
 
-def is_word_mean_time(word) -> bool:
+def is_word_mean_time(word: str) -> bool:
     """Checks if word is mean time interval
 
     Return:
@@ -120,7 +120,7 @@ def is_word_mean_time(word) -> bool:
     return False
 
 
-def is_word_mean_unique_time(word) -> bool:
+def is_word_mean_unique_time(word: str) -> bool:
     word_mean_unique_time = ["gg", "all"]
     if word in word_mean_unique_time:
         return True
