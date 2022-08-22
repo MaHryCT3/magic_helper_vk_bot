@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 from app.helpers import params_models as p_models
 from app import models
@@ -50,5 +50,7 @@ def _get_body_from_list(checks_count: list[models.ChecksCount]) -> str:
 
 def _get_body_from_model(check_count: models.ChecksCount) -> str:
     """Return body of view from single model"""
-    body = f"{check_count.moder} - 📝{check_count.checks_count} проверок из них {check_count.checks_ban} закончились баном\n"  # noqa: E501
+    if check_count.checks_count == 0:
+        return ""
+    body = f"{check_count.moder} - 📝{check_count.checks_count} проверок из них {check_count.checks_ban} закончились баном\n"
     return body
