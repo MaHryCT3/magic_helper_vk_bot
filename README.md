@@ -5,6 +5,7 @@ This VK bot for helps moderators on [Magic Rust](https://vk.com/magicowrust)
 
 ## Abilitys
 * Count checks 
+* [Get eac info](https://github.com/MaHryCT3/rust-eac-infromation)
 > That's not all. Application is developing
 # Requirements
 ## Production
