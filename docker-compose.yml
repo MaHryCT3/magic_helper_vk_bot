@@ -32,11 +32,11 @@ services:
     networks:
       - magic_helper_network
 
-  nginx:
+  nginx_webhook:
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
-    container_name: nginx
+    container_name: nginx_webhook
     depends_on:
       - webhook
     ports:

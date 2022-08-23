@@ -111,4 +111,19 @@ def parse_ban_params(data: models.VKEventData) -> p_models.BanCmdParams:
     )
 
 
+def parse_eac_params(data: models.VKEventData) -> p_models.GetEacParameters:
+    """Parse parameters for command /eac.
+
+    Args: vk event data
+
+    Return:
+        GetEacParameters  model instance
+    """
+    params = data.text.split(" ")
+    params.pop(0)  # remove cmd
+    if len(params) < 1:
+        raise ParamsError
+    return p_models.GetEacParameters(steamid=params[0])
+
+
 # TODO: Сделать общую реализацию для всех парсеров

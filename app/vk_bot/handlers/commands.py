@@ -2,6 +2,9 @@ from loguru import logger
 
 from vkbottle import VKAPIError
 
+from eac_info import get_eac_info
+from eac_info.exceptions import SteamIsNotFound
+
 from app import models
 from app import views
 from app.context import AppContext
@@ -34,6 +37,27 @@ class GetChecksCmd(Cmd):
             logger.error(e)
         else:
             msg = views.get_check_view(checks_count=checks_count, params=params)
+
+        try:
+            await vk.send_message(ctx.vk_api, msg, data.chat_id)
+        except VKAPIError as e:
+            logger.critical(f"Error with send message {e.code}")
+
+
+@events.on_cmd(signs=["иак", "eac"])
+class GetEacInfoCmd(Cmd):
+    async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
+        try:
+            params = p_parsers.parse_eac_params(data)
+        except ParamsError:
+            msg = "Информация об иаке пользователя.\n/eac [steamid]"
+
+        try:
+            eac_info = await get_eac_info(params.steamid)
+        except:
+            msg = "Информации об данном аккаунте не найдено, проверьте правильность данных"
+        else:
+            msg = views.get_eac_view(eac_info)
 
         try:
             await vk.send_message(ctx.vk_api, msg, data.chat_id)

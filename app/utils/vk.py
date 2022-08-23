@@ -4,7 +4,9 @@ from app import models
 
 
 async def send_message(vk_api: API, message: str, chat_id: int, *args: str) -> None:
-    await vk_api.messages.send(message=message, peer_id=chat_id, random_id=0, *args)
+    await vk_api.messages.send(
+        message=message, peer_id=chat_id, random_id=0, dont_parse_links=True, *args
+    )
 
 
 async def get_user(vk_api: API, user_id: int, *args: str) -> models.VKUser:

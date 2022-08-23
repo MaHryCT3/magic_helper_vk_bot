@@ -22,3 +22,8 @@ class BanCmdParams(ChecksCmdParams):
 class GetChecksParameters:
     moder_vk: int
     time_interval: models.TimeInterval
+
+
+@dataclasses.dataclass
+class GetEacParameters:
+    steamid: int
