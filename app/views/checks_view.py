@@ -52,5 +52,5 @@ def _get_body_from_model(check_count: models.ChecksCount) -> str:
     """Return body of view from single model"""
     if check_count.checks_count == 0:
         return ""
-    body = f"{check_count.moder} - 📝{check_count.checks_count} проверок из них {check_count.checks_ban} закончились баном\n"
+    body = f"📝{check_count.moder} - {check_count.checks_count} проверок из них {check_count.checks_ban} закончились баном\n"
     return body
