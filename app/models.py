@@ -64,6 +64,7 @@ class CheckInfo:
 
 @dataclasses.dataclass
 class VKEventData:
+    group_id: int
     event_type: str
     user_id: int
     date: DateTime
@@ -82,6 +83,7 @@ class VKEventData:
         else:
             raise NotSupportedEvent
         return cls(
+            group_id=json["group_id"],
             event_type=event_type,
             date=DateTime.fromtimestamp(event_info.get("date")),
             user_id=event_info.get("from_id"),

@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union
 
 from app.helpers import params_models as p_models
 from app import models

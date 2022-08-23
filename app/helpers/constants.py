@@ -3,6 +3,16 @@ TZ = "Europe/Moscow"
 STRING_DATE_FORMAT = "DD.MM.YYYY"
 
 
+class VK_FOR_CMD:
+    id_: int = 166700992
+    ignore_users: list[int] = [215360486, 179043503]
+
+
+class VK_FOR_MESSAGE:
+    id_: int = 215360486
+    ignore_users: list[int] = []
+
+
 class REGEX_PATTERNS:
     VK_ID = r"\[id(\d+)\|"  # -> [id`163811405`|@mahryct]
     STRING_IS_DATE = (
