@@ -3,7 +3,10 @@ from __future__ import annotations
 import dataclasses
 from typing import Optional, TypeAlias, Literal
 
+import pendulum
+
 from app.exceptions import NotSupportedEvent, VKJsonError
+from app.helpers import constants
 
 from pendulum.datetime import DateTime
 
@@ -90,3 +93,52 @@ class VKEventData:
             chat_id=event_info.get("peer_id"),
             text=event_info.get("text"),
         )
+
+
+@dataclasses.dataclass
+class PlayerStats:
+    steamid: int = 0
+    kill: int = 0
+    death: int = 0
+    kd: float = 0
+    headshot: int = 0
+
+    @classmethod
+    def from_json(cls, json: dict) -> PlayerStats:
+        kill: int = json.get("kp_total", 0)  # type: ignore
+        death: int = json.get("d_player", 0)  # type: ignore
+        kd = kill / death if death != 0 else kill
+        return cls(
+            steamid=json.get("steamid", 0),  # type: ignore
+            kill=kill,
+            death=death,
+            kd=kd,
+            headshot=json.get("kp_head", 0),  # type: ignore
+        )
+
+
+@dataclasses.dataclass
+class PlayerInfo:
+    steamid: int
+    ip: str
+    nickname: str
+    server: int
+    join_time: DateTime
+    vk: int
+    stats: Optional[PlayerStats] = None
+
+    @classmethod
+    def from_json(cls, json: list) -> list[PlayerInfo]:
+        players = []
+        for player_json in json:
+            players.append(
+                cls(
+                    steamid=int(player_json.get("id")),  # type: ignore
+                    ip=player_json.get("ip"),  # type: ignore
+                    nickname=player_json.get("nickname"),  # type: ignore
+                    server=int(player_json.get("server")),  # type: ignore
+                    join_time=pendulum.from_timestamp(int(player_json.get("firstjoin")), tz=constants.TZ),  # type: ignore
+                    vk=player_json.get("vk"),  # type: ignore
+                )
+            )
+        return players

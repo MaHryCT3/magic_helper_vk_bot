@@ -24,7 +24,7 @@ def _get_start_month_and_year(date: DateTime) -> MonthYear:
 def _get_time_start(date: DateTime) -> DateTime:
     m_y = _get_start_month_and_year(date)
     return pendulum.datetime(
-        year=m_y.year, month=m_y.month, day=constants.DAY_WORK_MONTH_END
+        year=m_y.year, month=m_y.month, day=constants.DAY_WORK_MONTH_END + 1
     )
 
 

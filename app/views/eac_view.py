@@ -1,6 +1,3 @@
-from calendar import c
-from typing import Union
-
 from eac_info.model import EACInfo
 
 from app.helpers import params_models as p_models

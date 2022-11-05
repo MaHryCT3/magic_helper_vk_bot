@@ -10,8 +10,9 @@ from app import views
 from app.context import AppContext
 from app.exceptions import ParamsError
 from app.helpers import params_parsers as p_parsers
-from app.utils import checks, vk
+from app.utils import checks, vk, magic
 from app.vk_bot.handlers.abc import BaseHandler
+from app.helpers import players as players_helpers
 
 from app.vk_bot import events
 
@@ -63,3 +64,26 @@ class GetEacInfoCmd(Cmd):
             await vk.send_message(ctx.vk_api, msg, data.chat_id)
         except VKAPIError as e:
             logger.critical(f"Error with send message {e.code}")
+
+
+@events.on_cmd(signs=["новые", "new", "пидорасы", "туц"])
+class GetNewPlayersCmd(Cmd):
+    async def handle(self, data: models.VKEventData, ctx: AppContext) -> None:
+
+        try:
+            new_players = await magic.get_new_online_players()
+        except:
+            msg = "Не удалось получить список игроков"
+            return await vk.send_message(ctx.vk_api, msg, data.chat_id)
+
+        try:
+            new_players_info = await magic.get_stats_from_players(new_players)
+        except:
+            msg = "Не удалось получить статистику игроков"
+            return await vk.send_message(ctx.vk_api, msg, data.chat_id)
+
+        new_players_info = players_helpers.filter_bad_stats(new_players_info)
+        new_players_info = players_helpers.sorted_by_kd(new_players_info)
+
+        msg = views.get_new_players_view(new_players_info)
+        return await vk.send_message(ctx.vk_api, msg, data.chat_id)

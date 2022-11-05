@@ -8,7 +8,7 @@ from app import models
 from app.context import AppContext
 from app.vk_bot.events import Event
 
-from app.vk_bot.handlers import *  # init handlers  # FIXME: хуйня так то какая то
+from app.vk_bot.handlers import *  # init handlers
 
 
 async def handle(request: web.Request, ctx: AppContext) -> web.Response:

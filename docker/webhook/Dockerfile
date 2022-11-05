@@ -19,7 +19,7 @@ COPY ./pyproject.toml .
 RUN chmod +x ${PROJECT_HOME}/docker/webhook/entrypoint.sh
 
 RUN apk update
-RUN apk add postgresql-dev gcc libpq libpq-dev python3-dev musl-dev libffi-dev openssl-dev cargo libxml2-dev libxslt-dev
+RUN apk add postgresql-dev gcc libpq libpq-dev python3-dev musl-dev libffi-dev openssl-dev cargo libxml2-dev libxslt-dev tzdata
 RUN python -m pip install --upgrade pip
 RUN python -m pip install --no-cache-dir poetry
 RUN python -m poetry config virtualenvs.create false
